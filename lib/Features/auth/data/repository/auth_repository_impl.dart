@@ -13,9 +13,16 @@ class AuthRepositoryImpl implements AuthRepositoryInterface {
   Future<Either<Failure, UserModel>> loginWithEmailPassword({
     required String email,
     required String password,
-  }) {
-    // TODO: implement loginWithEmailPassword
-    throw UnimplementedError();
+  }) async {
+    try {
+      final user = await authSupabaseDataSource.loginWithEmailPass(
+        email: email,
+        password: password,
+      );
+      return Right(user);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
   }
 
   @override
@@ -25,12 +32,11 @@ class AuthRepositoryImpl implements AuthRepositoryInterface {
     required String password,
   }) async {
     try {
-      final user= await authSupabaseDataSource
-          .signupWithEmailPassword(
-            email: email,
-            name: name,
-            password: password,
-          );
+      final user = await authSupabaseDataSource.signupWithEmailPassword(
+        email: email,
+        name: name,
+        password: password,
+      );
 
       return Right(user);
     } on ServerException catch (e) {

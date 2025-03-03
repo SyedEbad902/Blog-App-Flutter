@@ -1,6 +1,7 @@
 import 'package:blog_app/Features/auth/data/datasource/auth_supabase_datasource.dart';
 import 'package:blog_app/Features/auth/data/repository/auth_repository_impl.dart';
 import 'package:blog_app/Features/auth/domain/repository/auth_repository_interface.dart';
+import 'package:blog_app/Features/auth/domain/usecases/user_signin.dart';
 import 'package:blog_app/Features/auth/domain/usecases/user_signup.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/secrets/secrets.dart';
@@ -19,13 +20,9 @@ Future<void> initDependencies() async {
   _initAuth();
 }
 
-
 _initAuth() {
-
   serviceLocator.registerFactory<AuthSupabaseDatasource>(
-    () => AuthSupabaseDataSourceImpl(
-      supabaseClient: serviceLocator()
-      ),
+    () => AuthSupabaseDataSourceImpl(supabaseClient: serviceLocator()),
   );
 
   serviceLocator.registerFactory<AuthRepositoryInterface>(
@@ -35,8 +32,11 @@ _initAuth() {
   serviceLocator.registerFactory(
     () => UserSignup(authRepoInterface: serviceLocator()),
   );
+  serviceLocator.registerFactory(
+    () => UserSignin(authRepositoryInterface: serviceLocator()),
+  );
 
   serviceLocator.registerLazySingleton(
-    () => AuthBloc(userSignup: serviceLocator()),
+    () => AuthBloc(userSignup: serviceLocator(), userSignin: serviceLocator()),
   );
 }

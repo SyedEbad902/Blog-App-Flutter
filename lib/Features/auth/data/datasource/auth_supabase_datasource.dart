@@ -24,9 +24,21 @@ class AuthSupabaseDataSourceImpl implements AuthSupabaseDatasource {
   Future<UserModel> loginWithEmailPass({
     required String email,
     required String password,
-  }) {
-    // TODO: implement loginWithEmailPass
-    throw UnimplementedError();
+  })async {
+   try {
+      final response = await supabaseClient.auth.signInWithPassword(
+        password: password,
+        email: email,
+       
+      );
+      if (response.user == null) {
+        throw ServerException(message: 'User is null');
+      }
+      return UserModel.fromJson(response.user!.toJson());
+    } catch (e) {
+      print(e.toString());
+      throw ServerException(message: e.toString());
+    }
   }
 
   @override

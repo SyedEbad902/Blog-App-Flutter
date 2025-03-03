@@ -1,10 +1,12 @@
+
 import 'package:blog_app/utils/Theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class AuthButton extends StatelessWidget {
   final void Function()? onTap;
+  final bool isLoading;
   final String text;
-  const AuthButton({super.key, this.onTap, required this.text});
+  const AuthButton({super.key, this.onTap, required this.text,  this.isLoading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +28,9 @@ class AuthButton extends StatelessWidget {
           ),
         ),
         child: Center(
-          child: Text(
+          child:
+          isLoading ? CircularProgressIndicator() :
+           Text(
             text,
             style: TextStyle(
               color: Colors.white,

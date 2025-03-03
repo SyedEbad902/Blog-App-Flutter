@@ -1,7 +1,9 @@
 import 'package:blog_app/Features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_event.dart';
+import 'package:blog_app/Features/auth/presentation/bloc/auth_state.dart';
 import 'package:blog_app/Features/auth/presentation/screens/widgets/text_field.dart';
 import 'package:blog_app/utils/Theme/app_colors.dart';
+import 'package:blog_app/utils/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -71,19 +73,33 @@ class _SignupScreenState extends State<SignupScreen> {
                       isPassword: true,
                       controller: passwordController,
                     ),
-                    AuthButton(
-                      text: 'Signup',
-                      onTap: () {
-                        if (formKey.currentState!.validate()) {
-                          
-                          context.read<AuthBloc>().add(
-                            AuthSignupEvent(
-                              email: emailController.text.trim(),
-                              password: passwordController.text.trim(),
-                              name: nameController.text.trim(),
-                            ),
-                          );
+                    BlocConsumer<AuthBloc, AuthState>(
+                      listener: (context, state) {
+                        // TODO: implement listener
+
+                        if (state is AuthSuccessState) {
+                          showToast('Signup Successful');
+                          context.pushNamed('/login');
+                        } else if (state is AuthFailureState) {
+                          showToast(state.message);
                         }
+                      },
+                      builder: (context, state) {
+                        return AuthButton(
+                          isLoading: (state is AuthLoadingState) ? true : false,
+                          text: 'Signup',
+                          onTap: () {
+                            if (formKey.currentState!.validate()) {
+                              context.read<AuthBloc>().add(
+                                AuthSignupEvent(
+                                  email: emailController.text.trim(),
+                                  password: passwordController.text.trim(),
+                                  name: nameController.text.trim(),
+                                ),
+                              );
+                            }
+                          },
+                        );
                       },
                     ),
                     GestureDetector(
