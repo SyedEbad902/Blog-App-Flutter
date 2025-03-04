@@ -1,5 +1,6 @@
 import 'package:blog_app/Features/auth/data/datasource/auth_supabase_datasource.dart';
 import 'package:blog_app/Features/auth/data/models/user_model.dart';
+import 'package:blog_app/Features/auth/domain/entities/user.dart';
 import 'package:blog_app/Features/auth/domain/repository/auth_repository_interface.dart';
 import 'package:blog_app/utils/error/exceptions.dart';
 import 'package:blog_app/utils/error/failure.dart';
@@ -43,4 +44,20 @@ class AuthRepositoryImpl implements AuthRepositoryInterface {
       return left(Failure(e.message));
     }
   }
+
+  @override
+  Future<Either<Failure, User>> getCurrentUser() async {
+    try {
+      final user = await authSupabaseDataSource.getCurrentUser();
+
+      if (user == null) {
+        return left(Failure("User not logged in"));
+      }
+      return right(user);
+    } on ServerException catch (e) {
+      return left((Failure(e.message)));
+    }
+  }
+
+ 
 }
