@@ -1,4 +1,4 @@
-import 'package:blog_app/Features/auth/domain/entities/user.dart' show User;
+import 'package:blog_app/utils/entities/user.dart' show User;
 import 'package:blog_app/utils/error/failure.dart';
 import 'package:fpdart/fpdart.dart';
 

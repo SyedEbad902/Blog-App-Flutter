@@ -76,7 +76,9 @@ class AuthSupabaseDataSourceImpl implements AuthSupabaseDatasource {
             .from('profiles')
             .select()
             .eq('id', currentUserSession!.user.id);
-        return UserModel.fromJson(userData.first);
+        return UserModel.fromJson(userData.first).copyWith(
+          email: currentUserSession!.user.email,
+        );
         
       }
       return null;

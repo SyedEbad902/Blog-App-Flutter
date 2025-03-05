@@ -6,6 +6,7 @@ import 'package:blog_app/Features/auth/domain/usecases/user_signin.dart';
 import 'package:blog_app/Features/auth/domain/usecases/user_signup.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/secrets/secrets.dart';
+import 'package:blog_app/utils/cubits/app_user/app_user_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -36,14 +37,19 @@ _initAuth() {
   serviceLocator.registerFactory(
     () => UserSignin(authRepositoryInterface: serviceLocator()),
   );
-  serviceLocator.registerFactory(() =>
-    CurrentUser(authRepositoryInterface: serviceLocator()));
-  
+  serviceLocator.registerFactory(
+    () => CurrentUser(authRepositoryInterface: serviceLocator()),
+  );
+
+  //Cubit initialized
+  serviceLocator.registerLazySingleton(() => AppUserCubit());
+
   serviceLocator.registerLazySingleton(
     () => AuthBloc(
       userSignup: serviceLocator(),
       userSignin: serviceLocator(),
       currentUser: serviceLocator(),
+      appUserCubit: serviceLocator(),
     ),
   );
 }

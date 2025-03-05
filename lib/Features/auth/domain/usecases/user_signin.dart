@@ -1,4 +1,4 @@
-import 'package:blog_app/Features/auth/domain/entities/user.dart';
+import 'package:blog_app/utils/entities/user.dart';
 import 'package:blog_app/Features/auth/domain/repository/auth_repository_interface.dart';
 import 'package:blog_app/utils/error/failure.dart';
 import 'package:blog_app/utils/usercase%20interface/usecase_interface.dart';

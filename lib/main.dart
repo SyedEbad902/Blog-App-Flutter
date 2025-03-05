@@ -3,6 +3,7 @@ import 'package:blog_app/Features/auth/presentation/bloc/auth_event.dart';
 import 'package:blog_app/init_dependencies.dart';
 import 'package:blog_app/routes/routes.dart';
 import 'package:blog_app/utils/Theme/theme.dart';
+import 'package:blog_app/utils/cubits/app_user/app_user_cubit.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -11,7 +12,11 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   runApp(
     MultiBlocProvider(
-      providers: [BlocProvider(create: (_) => serviceLocator<AuthBloc>())],
+      providers: [
+        BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
+        BlocProvider(create: (_) => serviceLocator<AppUserCubit>())
+        
+        ],
       child: const MyApp(),
     ),
   );
@@ -36,6 +41,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp.router(
       title: 'Flutter Demo',
       theme: AppTheme.darkThemeMode,
+      
       routerConfig: router,
     );
   }
