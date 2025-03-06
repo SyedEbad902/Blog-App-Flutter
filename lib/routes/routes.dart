@@ -1,5 +1,7 @@
 import 'package:blog_app/Features/auth/presentation/screens/login_screen.dart';
 import 'package:blog_app/Features/auth/presentation/screens/signup_screen.dart';
+import 'package:blog_app/Features/blogs/presentation/add_new_blog_page.dart';
+import 'package:blog_app/Features/blogs/presentation/blog_page.dart';
 import 'package:blog_app/utils/cubits/app_user/app_user_cubit.dart';
 import 'package:blog_app/utils/cubits/app_user/app_user_state.dart';
 import 'package:flutter/material.dart';
@@ -19,11 +21,10 @@ final GoRouter router = GoRouter(
           },
           builder: (context, isLoggedIn) {
             if (isLoggedIn) {
-              return Scaffold(
-                body: Center(child: Text("Logged in Home Screen")),
-              );
+              return BlogPage();
+            } else {
+              return const LoginScreen();
             }
-            return const LoginScreen();
           },
         );
       },
@@ -33,6 +34,13 @@ final GoRouter router = GoRouter(
       name: '/signup',
       builder: (BuildContext context, GoRouterState state) {
         return const SignupScreen();
+      },
+    ),
+    GoRoute(
+      path: '/add-new-blog',
+      name: '/add-new-blog',
+      builder: (BuildContext context, GoRouterState state) {
+        return const AddNewBlogPage();
       },
     ),
   ],

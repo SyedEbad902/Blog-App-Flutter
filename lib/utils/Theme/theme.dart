@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 class AppTheme {
   static final darkThemeMode = ThemeData.dark().copyWith(
     scaffoldBackgroundColor: Color(0xff1C2321),
+    appBarTheme: AppBarTheme(backgroundColor: Color(0xff1C2321)),
     inputDecorationTheme: InputDecorationTheme(
       enabledBorder: OutlineInputBorder(
         borderRadius: BorderRadius.circular(20),
@@ -22,5 +23,7 @@ class AppTheme {
         borderSide: const BorderSide(color: Colors.red, width: 2),
       ),
     ),
-  );
+    chipTheme: ChipThemeData(color: WidgetStateProperty.all(Color(0xff1C2321))
+    ,side: BorderSide.none,
+  ));
 }
