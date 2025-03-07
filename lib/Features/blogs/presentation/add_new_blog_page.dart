@@ -1,5 +1,8 @@
+import 'dart:io';
+
 import 'package:blog_app/Features/blogs/presentation/widgets/blog_textfields.dart';
 import 'package:blog_app/utils/Theme/app_colors.dart';
+import 'package:blog_app/utils/pick_image.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,6 +15,26 @@ class AddNewBlogPage extends StatefulWidget {
 }
 
 class _AddNewBlogPageState extends State<AddNewBlogPage> {
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController contentController = TextEditingController();
+  File? selectedImage;
+  void selectImage() async {
+    final pickedFile = await pickImage();
+    if (pickedFile != null) {
+      setState(() {
+        selectedImage = pickedFile;
+      });
+    }
+  }
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    contentController.dispose();
+    super.dispose();
+  }
+
+  List<String> selectedTopics = [];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,85 +57,134 @@ class _AddNewBlogPageState extends State<AddNewBlogPage> {
       ),
       body: Padding(
         padding: const EdgeInsets.all(15.0),
-        child: Column(
-          spacing: 20,
-          children: [
-            DottedBorder(
-              color: AppColors.gradiant1,
-              strokeWidth: 2,
-              borderType: BorderType.RRect,
-              radius: Radius.circular(12),
-              dashPattern: [10, 4],
-              strokeCap: StrokeCap.round,
-
-              child: Container(
-                height: 170,
-                width: double.infinity,
-                decoration: BoxDecoration(),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  spacing: 10,
-                  children: [
-                    SvgPicture.asset(
-                      "asset/images-solid.svg",
-                      height: 55,
-                      width: 55,
-                    ),
-                    // Container(
-                    //   height: 60,
-                    //   width: 60,
-                    //   decoration: BoxDecoration(
-                    //     image: DecorationImage(
-                    //       image: ,
-                    //       //  AssetImage("asset/gallery.png"),
-                    //       // fit: BoxFit.cover,
-                    //     ),
-                    //   ),
-                    // ),
-                    Text(
-                      "Select Your Image",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                        color: AppColors.gradiant1,
+        child: SingleChildScrollView(
+          physics: BouncingScrollPhysics(),
+          child: Column(
+            spacing: 20,
+            children: [
+              if (selectedImage != null)
+                GestureDetector(
+                  onTap: selectImage,
+                  child: Container(
+                    height: 170,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(12),
+                      image: DecorationImage(
+                        image: FileImage(selectedImage!),
+                        fit: BoxFit.cover,
                       ),
                     ),
-                  ],
-                ),
-              ),
-            ),
+                  ),
+                )
+              else
+                GestureDetector(
+                  onTap: () {
+                    selectImage();
+                  },
+                  child: DottedBorder(
+                    color: AppColors.gradiant1,
+                    strokeWidth: 2,
+                    borderType: BorderType.RRect,
+                    radius: Radius.circular(12),
+                    dashPattern: [10, 4],
+                    strokeCap: StrokeCap.round,
 
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: Row(
-                children:
-                    [
-                          'Programming',
-                          'Technology',
-                          'Science',
-                          'Engineering',
-                          'Mathematics',
-                          'Art',
-                        ]
-                        .map(
-                          (e) => Padding(
-                            padding: const EdgeInsets.all(5.0),
-                            child: Chip(
-                              label: Text(e),
-                              side: BorderSide(
-                                color: AppColors.gradiant1,
-                                width: 2,
-                              ),
+                    child: Container(
+                      height: 170,
+                      width: double.infinity,
+                      decoration: BoxDecoration(),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        spacing: 10,
+                        children: [
+                          SvgPicture.asset(
+                            "asset/images-solid.svg",
+                            height: 55,
+                            width: 55,
+                          ),
+                          // Container(
+                          //   height: 60,
+                          //   width: 60,
+                          //   decoration: BoxDecoration(
+                          //     image: DecorationImage(
+                          //       image: ,
+                          //       //  AssetImage("asset/gallery.png"),
+                          //       // fit: BoxFit.cover,
+                          //     ),
+                          //   ),
+                          // ),
+                          Text(
+                            "Select Your Image",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                              color: AppColors.gradiant1,
                             ),
                           ),
-                        )
-                        .toList(),
-              ),
-            ),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
 
-            BlogTextfields(hintText: "title"),
-            BlogTextfields(hintText: "content"),
-          ],
+              SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: Row(
+                  children:
+                      [
+                            'Programming',
+                            'Technology',
+                            'Science',
+                            'Engineering',
+                            'Mathematics',
+                            'Art',
+                          ]
+                          .map(
+                            (e) => Padding(
+                              padding: const EdgeInsets.all(5.0),
+                              child: GestureDetector(
+                                onTap: () {
+                                  if (selectedTopics.contains(e)) {
+                                    selectedTopics.remove(e);
+                                  } else {
+                                    selectedTopics.add(e);
+                                  }
+                                  setState(() {
+                                    print(selectedTopics);
+                                  });
+                                },
+
+                                child: Chip(
+                                  color:
+                                      selectedTopics.contains(e)
+                                          ? WidgetStatePropertyAll(
+                                            AppColors.gradiant2,
+                                          )
+                                          : null,
+                                  label: Text(e),
+                                  side:
+                                      selectedTopics.contains(e)
+                                          ? null
+                                          : BorderSide(
+                                            color: AppColors.gradiant1,
+                                            width: 2,
+                                          ),
+                                ),
+                              ),
+                            ),
+                          )
+                          .toList(),
+                ),
+              ),
+
+              BlogTextfields(hintText: "title", controller: titleController),
+              BlogTextfields(
+                hintText: "content",
+                controller: contentController,
+              ),
+            ],
+          ),
         ),
       ),
     );
