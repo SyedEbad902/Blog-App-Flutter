@@ -3,7 +3,7 @@ import 'package:blog_app/Features/auth/domain/usecases/user_signin.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_event.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_state.dart';
 import 'package:blog_app/utils/cubits/app_user/app_user_cubit.dart';
-import 'package:blog_app/utils/usercase%20interface/usecase_interface.dart';
+import 'package:blog_app/utils/usecase%20interface/usecase_interface.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../domain/usecases/user_signup.dart';

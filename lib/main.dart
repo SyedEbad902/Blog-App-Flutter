@@ -1,5 +1,6 @@
 import 'package:blog_app/Features/auth/presentation/bloc/auth_bloc.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_event.dart';
+import 'package:blog_app/Features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:blog_app/init_dependencies.dart';
 import 'package:blog_app/routes/routes.dart';
 import 'package:blog_app/utils/Theme/theme.dart';
@@ -14,7 +15,8 @@ void main() async {
     MultiBlocProvider(
       providers: [
         BlocProvider(create: (_) => serviceLocator<AuthBloc>()),
-        BlocProvider(create: (_) => serviceLocator<AppUserCubit>())
+        BlocProvider(create: (_) => serviceLocator<AppUserCubit>()),
+        BlocProvider(create: (_) => serviceLocator<BlogBloc>())
         
         ],
       child: const MyApp(),

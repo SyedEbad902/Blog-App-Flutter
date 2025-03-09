@@ -1,18 +1,25 @@
 import 'package:flutter/material.dart';
 
-import '../../../../utils/Theme/app_colors.dart';
-
 class BlogTextfields extends StatelessWidget {
   final String hintText;
   final TextEditingController controller;
-  const BlogTextfields({super.key, required this.hintText, required this.controller});
+  const BlogTextfields({
+    super.key,
+    required this.hintText,
+    required this.controller,
+  });
 
   @override
   Widget build(BuildContext context) {
     return TextFormField(
-      controller:controller,
+      controller: controller,
       maxLines: null,
-
+      validator: (value) {
+        if (value!.trim().isEmpty) {
+          return '$hintText is Empty!';
+        }
+        return null;
+      },
       decoration: InputDecoration(
         hintText: hintText,
         contentPadding: EdgeInsets.all(20),

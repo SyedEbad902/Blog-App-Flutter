@@ -37,6 +37,13 @@ final GoRouter router = GoRouter(
       },
     ),
     GoRoute(
+      path: '/blog-page',
+      name: '/blog-page',
+      builder: (BuildContext context, GoRouterState state) {
+        return const BlogPage();
+      },
+    ),
+    GoRoute(
       path: '/add-new-blog',
       name: '/add-new-blog',
       builder: (BuildContext context, GoRouterState state) {

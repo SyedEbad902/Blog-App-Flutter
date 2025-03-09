@@ -1,3 +1,4 @@
+
 class Blog {
   final String id;
   final String posterId;
@@ -16,4 +17,8 @@ class Blog {
     required this.topics,
     required this.updatedAt,
   });
+
+  
+
+ 
 }

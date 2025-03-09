@@ -5,6 +5,11 @@ import 'package:blog_app/Features/auth/domain/usecases/current_user.dart';
 import 'package:blog_app/Features/auth/domain/usecases/user_signin.dart';
 import 'package:blog_app/Features/auth/domain/usecases/user_signup.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:blog_app/Features/blogs/data/datasources/blog_data_source.dart';
+import 'package:blog_app/Features/blogs/data/repositories/blog_repository_impl.dart';
+import 'package:blog_app/Features/blogs/domain/repositories/blog_repository_interface.dart';
+import 'package:blog_app/Features/blogs/domain/usecases/upload_blog.dart';
+import 'package:blog_app/Features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:blog_app/secrets/secrets.dart';
 import 'package:blog_app/utils/cubits/app_user/app_user_cubit.dart';
 import 'package:get_it/get_it.dart';
@@ -20,6 +25,7 @@ Future<void> initDependencies() async {
   serviceLocator.registerLazySingleton(() => supabase.client);
 
   _initAuth();
+  _initBlog();
 }
 
 _initAuth() {
@@ -52,4 +58,27 @@ _initAuth() {
       appUserCubit: serviceLocator(),
     ),
   );
+}
+
+void _initBlog() {
+ 
+ //Data Source
+  serviceLocator
+    ..registerFactory<BlogDataSource>(
+      () => BlogDataSourceImpl(supabaseClient: serviceLocator()),
+    )
+ //Repository
+
+    ..registerFactory<BlogRepositoryInterface>(
+      () => BlogRepositoryImpl(blogDataSource: serviceLocator()),
+    )
+ //Use Case
+
+    ..registerFactory(
+      () => UploadBlogUseCase(blogRepositoryInterface: serviceLocator()),
+    )
+ //Bloc
+    ..registerLazySingleton(
+      () => BlogBloc(uploadBlogUseCase: serviceLocator()),
+    );
 }
