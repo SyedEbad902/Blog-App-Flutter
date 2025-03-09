@@ -43,7 +43,10 @@ final class BlogDataSourceImpl implements BlogDataSource {
   }) async {
     try {
       await supabaseClient.storage.from('blog_images').upload(blog.id, image);
-      return supabaseClient.storage.from('blog_images').getPublicUrl(blog.id);
+      final publicUrl = supabaseClient.storage
+          .from('blog_images')
+          .getPublicUrl(blog.id);
+      return publicUrl;
     } catch (e) {
       throw ServerException(message: e.toString());
     }

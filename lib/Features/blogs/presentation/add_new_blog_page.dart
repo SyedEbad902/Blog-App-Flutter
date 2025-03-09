@@ -88,7 +88,7 @@ class _AddNewBlogPageState extends State<AddNewBlogPage> {
           if (state is BlogSuccessState) {
             print('success state');
             showToast("Blog uploaded Successfully");
-            context.replaceNamed('blog-page');
+            context.replaceNamed('/blog-page');
           } else if (state is BlogFailureState) {
             print('failure state');
             print(state.error);

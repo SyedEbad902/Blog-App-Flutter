@@ -35,11 +35,13 @@ class BlogRepositoryImpl implements BlogRepositoryInterface {
         image: image,
         blog: blogModel,
       );
+      print("this is image url $imageUrl");
 
-      blogModel.copyWith(imageUrl: imageUrl);
-
-      final uploadedBlog = await blogDataSource.uploadBlog(blog: blogModel);
+     final BlogModel newBlog= blogModel.copyWith(imageUrl: imageUrl);
       
+      final uploadedBlog = blogModel;
+      await blogDataSource.uploadBlog(blog: newBlog);
+
       return right(uploadedBlog);
     } on ServerException catch (e) {
       return left(Failure(e.message));
