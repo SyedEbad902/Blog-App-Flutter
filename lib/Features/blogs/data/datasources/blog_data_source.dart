@@ -7,7 +7,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 abstract interface class BlogDataSource {
   Future<BlogModel> uploadBlog({required BlogModel blog});
 
-  Future<BlogModel> fetchBlog();
+  Future<List<BlogModel>> fetchBlogs();
   Future<String> uploadBlogImage({
     required File image,
     required BlogModel blog,
@@ -20,9 +20,20 @@ final class BlogDataSourceImpl implements BlogDataSource {
   BlogDataSourceImpl({required this.supabaseClient});
 
   @override
-  Future<BlogModel> fetchBlog() {
-    // TODO: implement fetchBlog
-    throw UnimplementedError();
+  Future<List<BlogModel>> fetchBlogs() async {
+    try {
+      final blogs = await supabaseClient
+          .from('blogs')
+          .select('*,profiles (name)');
+
+      final List<BlogModel> allBlogs = [];
+      for (var e in blogs) {
+        allBlogs.add(BlogModel.fromJson(e).copyWith(posterName: e['profiles']['name']));
+      }
+      return allBlogs;
+    } catch (e) {
+      throw ServerException(message: e.toString());
+    }
   }
 
   @override
