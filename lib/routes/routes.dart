@@ -1,6 +1,8 @@
 import 'package:blog_app/Features/auth/presentation/screens/login_screen.dart';
 import 'package:blog_app/Features/auth/presentation/screens/signup_screen.dart';
+import 'package:blog_app/Features/blogs/domain/entities/blog.dart';
 import 'package:blog_app/Features/blogs/presentation/add_new_blog_page.dart';
+import 'package:blog_app/Features/blogs/presentation/blog_description.dart';
 import 'package:blog_app/Features/blogs/presentation/blog_page.dart';
 import 'package:blog_app/utils/cubits/app_user/app_user_cubit.dart';
 import 'package:blog_app/utils/cubits/app_user/app_user_state.dart';
@@ -48,6 +50,15 @@ final GoRouter router = GoRouter(
       name: '/add-new-blog',
       builder: (BuildContext context, GoRouterState state) {
         return const AddNewBlogPage();
+      },
+    ),
+    GoRoute(
+      path: '/open-blog',
+      name: '/open-blog',
+    
+      builder: (BuildContext context, GoRouterState state,) {
+          final blog = state.extra as Blog;
+        return  BlogDescription(blog: blog,);
       },
     ),
   ],
