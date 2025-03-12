@@ -1,5 +1,6 @@
 import 'package:blog_app/Features/blogs/domain/entities/blog.dart';
 import 'package:blog_app/utils/Theme/app_colors.dart';
+import 'package:blog_app/utils/format_date.dart';
 import 'package:blog_app/utils/reading_time_calc.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
@@ -123,7 +124,7 @@ class _BlogDescriptionState extends State<BlogDescription> {
                 top: 25,
                 bottom: 10,
                 left: 20,
-                right: 20,
+                right: 10,
               ),
               margin: EdgeInsets.all(5),
               decoration: BoxDecoration(
@@ -138,49 +139,74 @@ class _BlogDescriptionState extends State<BlogDescription> {
                   ),
                 ],
               ),
-              child: SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          widget.blog.title,
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                            color: AppColors.blackColor,
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            Icon(
-                              Icons.watch_later_outlined,
-                              size: 20,
+              child: Scrollbar(
+                child: SingleChildScrollView(
+                  physics: BouncingScrollPhysics(),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            widget.blog.title,
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
                               color: AppColors.blackColor,
                             ),
-                            Text(
-                              " ${readingTimeCalculation(widget.blog.content)} mins",
-                              style: TextStyle(
-                                fontSize: 14,
+                          ),
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.watch_later_outlined,
+                                size: 20,
                                 color: AppColors.blackColor,
                               ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                    SizedBox(height: 15),
-                    Text(
-                      widget.blog.content,
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: AppColors.iconGreyColor,
+                              Text(
+                                " ${readingTimeCalculation(widget.blog.content)} mins    ",
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  color: AppColors.blackColor,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                    ),
-                  ],
+                      Text(
+                        'By ${widget.blog.posterName!}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.iconGreyColor,
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      Text(
+                        '${formatDateDMMMYYYY(widget.blog.updatedAt)}',
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.w500,
+
+                          color: AppColors.iconGreyColor,
+                        ),
+                      ),
+
+                      SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 8.0),
+                        child: Text(
+                          widget.blog.content,
+                          style: TextStyle(
+                            height: 1.8,
+                            fontSize: 16,
+                            color: AppColors.greyColor,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
