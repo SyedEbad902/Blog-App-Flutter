@@ -28,7 +28,9 @@ final class BlogDataSourceImpl implements BlogDataSource {
 
       final List<BlogModel> allBlogs = [];
       for (var e in blogs) {
-        allBlogs.add(BlogModel.fromJson(e).copyWith(posterName: e['profiles']['name']));
+        allBlogs.add(
+          BlogModel.fromJson(e).copyWith(posterName: e['profiles']['name']),
+        );
       }
       return allBlogs;
     } catch (e) {
@@ -62,4 +64,5 @@ final class BlogDataSourceImpl implements BlogDataSource {
       throw ServerException(message: e.toString());
     }
   }
+
 }

@@ -7,3 +7,6 @@ abstract interface class UsecaseInterface<SuccessType, Params> {
 
 class NoParams {}
 
+abstract interface class LogoutInterface<Params> {
+  Future call(Params params);
+}

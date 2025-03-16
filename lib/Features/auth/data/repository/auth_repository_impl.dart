@@ -83,4 +83,13 @@ class AuthRepositoryImpl implements AuthRepositoryInterface {
       return left((Failure(e.message)));
     }
   }
+   @override
+  Future logout() async {
+    try {
+      final user = await authSupabaseDataSource.logout();
+      return right(user);
+    } on ServerException catch (e) {
+      return left(Failure(e.message));
+    }
+  }
 }

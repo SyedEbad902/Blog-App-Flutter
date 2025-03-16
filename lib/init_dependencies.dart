@@ -2,6 +2,7 @@ import 'package:blog_app/Features/auth/data/datasource/auth_supabase_datasource.
 import 'package:blog_app/Features/auth/data/repository/auth_repository_impl.dart';
 import 'package:blog_app/Features/auth/domain/repository/auth_repository_interface.dart';
 import 'package:blog_app/Features/auth/domain/usecases/current_user.dart';
+import 'package:blog_app/Features/auth/domain/usecases/logout.dart';
 import 'package:blog_app/Features/auth/domain/usecases/user_signin.dart';
 import 'package:blog_app/Features/auth/domain/usecases/user_signup.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_bloc.dart';
@@ -52,13 +53,14 @@ _initAuth() {
 
   //Cubit initialized
   serviceLocator.registerLazySingleton(() => AppUserCubit());
+  serviceLocator.registerLazySingleton(() => Logout(authRepositoryInterface: serviceLocator()));
 
   serviceLocator.registerLazySingleton(
     () => AuthBloc(
       userSignup: serviceLocator(),
       userSignin: serviceLocator(),
       currentUser: serviceLocator(),
-      appUserCubit: serviceLocator(),
+      appUserCubit: serviceLocator(), logout: serviceLocator(),
     ),
   );
   serviceLocator.registerFactory(

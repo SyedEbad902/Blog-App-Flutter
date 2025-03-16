@@ -1,3 +1,6 @@
+import 'package:blog_app/Features/auth/presentation/bloc/auth_bloc.dart';
+import 'package:blog_app/Features/auth/presentation/bloc/auth_event.dart';
+import 'package:blog_app/Features/auth/presentation/bloc/auth_state.dart';
 import 'package:blog_app/Features/blogs/presentation/bloc/blog_bloc.dart';
 import 'package:blog_app/Features/blogs/presentation/bloc/blog_event.dart';
 import 'package:blog_app/Features/blogs/presentation/bloc/blog_state.dart';
@@ -57,7 +60,7 @@ class _BlogPageState extends State<BlogPage>
   void _triggerAnimations(int itemCount) async {
     _animations = List.generate(itemCount, (index) {
       return Tween<Offset>(
-        begin: Offset(1, 0), // Start off-screen (right)
+        begin: Offset(0, 1), // Start off-screen (right)
         end: Offset(0, 0), // Move to its position
       ).animate(CurvedAnimation(parent: _controller, curve: Curves.easeOut));
     });
@@ -83,9 +86,17 @@ class _BlogPageState extends State<BlogPage>
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: AppColors.gradiant1,
+        shape: CircleBorder(),
+        onPressed: () {
+          context.pushNamed('/add-new-blog');
+        },
+        child: Icon(Icons.add, size: 30),
+      ),
       appBar: AppBar(
         title: Text(
-          'Blog Page',
+          'BLOGSPHERE',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.w600),
         ),
         toolbarHeight: 70,
@@ -96,77 +107,90 @@ class _BlogPageState extends State<BlogPage>
         backgroundColor: AppColors.gradiant1,
         actions: [
           IconButton(
-            icon: Icon(Icons.add_circle_outline, size: 30),
+            icon: Icon(Icons.logout, size: 30),
             onPressed: () {
-              context.pushNamed('/add-new-blog');
               // Add new blog
+              context.read<AuthBloc>().add(LogoutEvent());
             },
           ),
         ],
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: BlocConsumer<BlogBloc, BlogState>(
-          listener: (context, state) {
-            if (state is BlogFailureState) {
-              showToast("Error fetching blogs!");
-            }
-          },
+      body: BlocListener<AuthBloc, AuthState>(
+        listener: (context, state) {
+          if (state is AuthSuccess) {
+            context.goNamed('/logout');
+          }
+        },
+        child: Padding(
+          padding: const EdgeInsets.all(12.0),
+          child: BlocConsumer<BlogBloc, BlogState>(
+            listener: (context, state) {
+              if (state is BlogFailureState) {
+                showToast("Error fetching blogs!");
+              }
+            },
 
-          builder: (context, state) {
-            if (state is BlogLoadingState) {
-              return Shimmer.fromColors(
-                baseColor: Colors.grey.shade300,
-                highlightColor: Colors.grey.shade100,
-                enabled: true,
-                child: const SingleChildScrollView(
-                  physics: NeverScrollableScrollPhysics(),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      SizedBox(height: 16.0),
-                      ContentPlaceholder(lineType: ContentLineType.threeLines),
-                      SizedBox(height: 16.0),
-                      ContentPlaceholder(lineType: ContentLineType.threeLines),
-                      SizedBox(height: 16.0),
-                      ContentPlaceholder(lineType: ContentLineType.threeLines),
-                    ],
-                  ),
-                ),
-              );
-            }
-            if (state is BlogFetchSuccessState) {
-              return ListView.builder(
-                itemCount: state.blogs.length,
-                itemBuilder: (context, index) {
-                  final blog = state.blogs[index];
-
-                  if (_isVisible.isEmpty) {
-                    _triggerAnimations(state.blogs.length);
-                  }
-                  return AnimatedOpacity(
-                    duration: Duration(milliseconds: 500),
-                    opacity:
-                        _isVisible.length > index && _isVisible[index]
-                            ? 1.0
-                            : 0.0,
-
-                    child: SlideTransition(
-                      position: _animations[index],
-                      child: GestureDetector(
-                        onTap: () {
-                          context.pushNamed('/open-blog', extra: blog);
-                        },
-                        child: CustomBlogCard(blog: blog),
-                      ),
+            builder: (context, state) {
+              if (state is BlogLoadingState) {
+                return Shimmer.fromColors(
+                  baseColor: Colors.grey.shade300,
+                  highlightColor: Colors.grey.shade100,
+                  enabled: true,
+                  child: const SingleChildScrollView(
+                    physics: NeverScrollableScrollPhysics(),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        SizedBox(height: 16.0),
+                        ContentPlaceholder(
+                          lineType: ContentLineType.threeLines,
+                        ),
+                        SizedBox(height: 16.0),
+                        ContentPlaceholder(
+                          lineType: ContentLineType.threeLines,
+                        ),
+                        SizedBox(height: 16.0),
+                        ContentPlaceholder(
+                          lineType: ContentLineType.threeLines,
+                        ),
+                      ],
                     ),
-                  );
-                },
-              );
-            }
-            return SizedBox();
-          },
+                  ),
+                );
+              }
+              if (state is BlogFetchSuccessState) {
+                return ListView.builder(
+                  itemCount: state.blogs.length,
+                  itemBuilder: (context, index) {
+                    final blog = state.blogs[index];
+
+                    if (_isVisible.isEmpty) {
+                      _triggerAnimations(state.blogs.length);
+                    }
+                    return AnimatedOpacity(
+                      duration: Duration(milliseconds: 500),
+                      opacity:
+                          _isVisible.length > index && _isVisible[index]
+                              ? 1.0
+                              : 0.0,
+
+                      child: SlideTransition(
+                        position: _animations[index],
+                        child: GestureDetector(
+                          onTap: () {
+                            context.pushNamed('/open-blog', extra: blog);
+                          },
+                          child: CustomBlogCard(blog: blog),
+                        ),
+                      ),
+                    );
+                  },
+                );
+              }
+              return SizedBox();
+            },
+          ),
         ),
       ),
     );

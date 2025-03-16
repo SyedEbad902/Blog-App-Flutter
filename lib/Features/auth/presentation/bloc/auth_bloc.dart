@@ -1,4 +1,5 @@
 import 'package:blog_app/Features/auth/domain/usecases/current_user.dart';
+import 'package:blog_app/Features/auth/domain/usecases/logout.dart';
 import 'package:blog_app/Features/auth/domain/usecases/user_signin.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_event.dart';
 import 'package:blog_app/Features/auth/presentation/bloc/auth_state.dart';
@@ -12,18 +13,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final UserSignup _userSignup;
   final UserSignin _userSignin;
   final CurrentUser _currentUser;
+  final Logout _logout;
   final AppUserCubit _appUserCubit;
   AuthBloc({
     required UserSignup userSignup,
     required UserSignin userSignin,
     required CurrentUser currentUser,
+    required Logout logout,
+
     required AppUserCubit appUserCubit,
   }) : _userSignup = userSignup,
        _userSignin = userSignin,
        _currentUser = currentUser,
        _appUserCubit = appUserCubit,
+       _logout = logout,
        super(AuthInitial()) {
-        
     on<AuthSignupEvent>((event, emit) async {
       emit(AuthLoadingState());
       final res = await _userSignup(
@@ -42,8 +46,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         (success) {
           print("success: $success");
           // emit(AuthSuccessState(user: success));
-                    _appUserCubit.updateUser(success);
-
+          _appUserCubit.updateUser(success);
         },
       );
     });
@@ -59,14 +62,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         },
         (success) {
           // emit(AuthSuccessState(user: success));
-                    _appUserCubit.updateUser(success);
-
+          _appUserCubit.updateUser(success);
         },
       );
     });
 
     on<CurrentUserEvent>((event, emit) async {
-            emit(AuthLoadingState());
+      emit(AuthLoadingState());
 
       final res = await _currentUser(NoParams());
 
@@ -79,6 +81,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           _appUserCubit.updateUser(success);
         },
       );
+    });
+
+    on<LogoutEvent>((event, emit) async {
+      try {
+        final res = await _logout.call(NoParams());
+        emit(AuthSuccess());
+      } catch (e) {
+        print(e.toString());
+        emit(AuthFailureState(message: e.toString()));
+      }
     });
   }
 }

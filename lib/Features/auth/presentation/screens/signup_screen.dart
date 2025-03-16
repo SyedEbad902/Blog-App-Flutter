@@ -103,7 +103,7 @@ class _SignupScreenState extends State<SignupScreen> {
                       },
                     ),
                     GestureDetector(
-                      onTap: () => context.pushNamed('/login'),
+                      onTap: () => context.pop(),
                       child: RichText(
                         text: TextSpan(
                           text: 'Already have an account? ',

@@ -7,6 +7,7 @@ sealed class AuthState {}
 final class AuthInitial extends AuthState {}
 
 final class AuthLoadingState extends AuthState {}
+final class AuthSuccess extends AuthState {}
 
 final class AuthSuccessState extends AuthState {
   final User user;
